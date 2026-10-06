@@ -30,5 +30,5 @@
   "config.closePreviousTerminals": "Close previous terminals created only by Explorer Pro.",
   "command.focusMenu": "Focus Menu",
   "command.cleanupWorkspaces": "Clean Old Managed Workspaces",
-  "command.delete": "Move Selected Items to Trash"
+  "command.delete": "Move to Trash"
 }

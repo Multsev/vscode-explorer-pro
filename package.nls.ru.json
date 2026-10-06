@@ -30,5 +30,5 @@
   "config.closePreviousTerminals": "Закрывать предыдущие терминалы, созданные только Explorer Pro.",
   "command.focusMenu": "Меню фокуса",
   "command.cleanupWorkspaces": "Очистить старые служебные workspace",
-  "command.delete": "Удалить выбранные элементы в корзину"
+  "command.delete": "Move to Trash"
 }
