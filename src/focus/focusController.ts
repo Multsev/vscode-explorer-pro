@@ -1,12 +1,13 @@
 import * as vscode from "vscode";
 import { WorkspaceFocus } from "./workspaceFocus";
 import { VscodeFocusHost } from "./vscodeFocusHost";
+import { focusLabel } from "./focusLabel";
 import { TerminalService } from "../services/terminalService";
 
 export class FocusController implements vscode.Disposable {
   private readonly status = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 90);
   public constructor(private readonly focusService: WorkspaceFocus, private readonly terminals: TerminalService) {
-    this.status.command = "extensionExplorer.restoreWorkspace";
+    this.status.command = "extensionExplorer.focusMenu";
     this.updateStatus();
   }
 
@@ -32,8 +33,9 @@ export class FocusController implements vscode.Disposable {
     void vscode.commands.executeCommand("setContext", "extensionExplorer.focusCanGoBack", !!state);
     if (!state) { this.status.hide(); return; }
     const uri = vscode.Uri.parse(state.history[state.cursor]!);
-    this.status.text = `$(zoom-in) Explorer Pro: ${uri.path.split("/").pop() || uri.fsPath}`;
-    this.status.tooltip = `Workspace focus: ${uri.fsPath}\nClick to return to the full project.`;
+    const label = focusLabel(uri.fsPath, state.original.folders.map(folder => vscode.Uri.parse(folder.uri).fsPath));
+    this.status.text = `$(zoom-in) Фокус: ${label}`;
+    this.status.tooltip = `Фокус: ${uri.fsPath}\nНажмите для выбора действия: назад, полный проект, другой фокус.`;
     this.status.show();
   }
 }

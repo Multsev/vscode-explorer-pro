@@ -27,5 +27,7 @@
   "command.openSavedRoot": "Go to Home Folder",
   "command.click": "Open Item",
   "config.openTerminalOnFocus": "Open a terminal after changing workspace focus.",
-  "config.closePreviousTerminals": "Close previous terminals created only by Explorer Pro."
+  "config.closePreviousTerminals": "Close previous terminals created only by Explorer Pro.",
+  "command.focusMenu": "Focus Menu",
+  "command.cleanupWorkspaces": "Clean Old Managed Workspaces"
 }

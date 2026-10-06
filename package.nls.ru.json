@@ -27,5 +27,7 @@
   "command.openSavedRoot": "Перейти в домашнюю папку",
   "command.click": "Открыть элемент",
   "config.openTerminalOnFocus": "Открывать терминал после изменения фокуса рабочего пространства.",
-  "config.closePreviousTerminals": "Закрывать предыдущие терминалы, созданные только Explorer Pro."
+  "config.closePreviousTerminals": "Закрывать предыдущие терминалы, созданные только Explorer Pro.",
+  "command.focusMenu": "Меню фокуса",
+  "command.cleanupWorkspaces": "Очистить старые служебные workspace"
 }

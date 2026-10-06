@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import { randomUUID } from "crypto";
+import { recoverWorkspace, RecoveryAction } from "./recovery";
 import { FocusHost } from "./workspaceFocus";
 import { FocusState, isFocusState, WorkspaceSnapshot } from "./focusState";
 
@@ -47,15 +48,43 @@ export class VscodeFocusHost implements FocusHost {
   }
 
   public async prepareRestore(snapshot: WorkspaceSnapshot): Promise<string | undefined> {
-    if (snapshot.workspaceFile && vscode.Uri.parse(snapshot.workspaceFile).scheme !== "untitled") {
-      const uri = vscode.Uri.parse(snapshot.workspaceFile);
-      await vscode.workspace.fs.stat(uri);
-      return snapshot.workspaceFile;
+    try {
+      if (snapshot.workspaceFile && vscode.Uri.parse(snapshot.workspaceFile).scheme !== "untitled") {
+        await vscode.workspace.fs.stat(vscode.Uri.parse(snapshot.workspaceFile));
+        // A surviving saved workspace can still refer to missing roots.
+        for (const folder of snapshot.folders) await this.validateFolder(folder.uri);
+        return snapshot.workspaceFile;
+      }
+      for (const folder of snapshot.folders) await this.validateFolder(folder.uri);
+      if (!snapshot.workspaceFile && snapshot.folders.length === 1) return snapshot.folders[0]!.uri;
+      return this.write({ folders: snapshot.folders }, "restored");
+    } catch {
+      return this.recover(snapshot);
     }
-    for (const folder of snapshot.folders) await this.validateFolder(folder.uri);
-    if (!snapshot.workspaceFile && snapshot.folders.length === 1) return snapshot.folders[0]!.uri;
-    // An empty workspace is opened explicitly; vscode.openFolder(undefined) would show a folder picker.
-    return this.write({ folders: snapshot.folders }, "restored");
+  }
+
+  private async recover(snapshot: WorkspaceSnapshot): Promise<string | undefined> {
+    return recoverWorkspace(snapshot, {
+      available: async value => { try { await this.validateFolder(value); return true; } catch { return false; } },
+      workspace: folders => this.write({ folders }, "restored"),
+      choose: async (surviving, total) => {
+        const options: { label: string; description?: string; action: RecoveryAction }[] = [
+          { label: "Найти проект заново…", description: "Выбрать перенесённую папку или файл .code-workspace", action: "locate" },
+          ...(surviving ? [{ label: "Открыть сохранившиеся корни", description: `${surviving} из ${total}`, action: "surviving" as const }] : []),
+          { label: "Выйти в пустое рабочее пространство", action: "empty" },
+          { label: "Остаться в текущем фокусе", action: "cancel" }
+        ];
+        return (await vscode.window.showQuickPick(options, { title: "Исходный проект недоступен", placeHolder: "Выберите способ выхода." }))?.action;
+      },
+      locate: async () => {
+        const picked = await vscode.window.showOpenDialog({ canSelectFiles: true, canSelectFolders: true, canSelectMany: false, openLabel: "Открыть проект" });
+        if (!picked?.[0]) return;
+        const uri = picked[0];
+        const stat = await vscode.workspace.fs.stat(uri);
+        if (stat.type & vscode.FileType.Directory || path.extname(uri.fsPath).toLowerCase() === ".code-workspace") return uri.toString();
+        throw new Error("Выберите папку проекта или файл .code-workspace.");
+      }
+    });
   }
 
   public async open(value: string | undefined): Promise<boolean> {
@@ -70,7 +99,7 @@ export class VscodeFocusHost implements FocusHost {
   private async write(content: unknown, prefix: string): Promise<string> {
     await vscode.workspace.fs.createDirectory(this.directory);
     const uri = vscode.Uri.joinPath(this.directory, `${prefix}-${randomUUID()}.code-workspace`);
-    await vscode.workspace.fs.writeFile(uri, Buffer.from(JSON.stringify(content, null, 2)));
+    await vscode.workspace.fs.writeFile(uri, Buffer.from(JSON.stringify({ explorerProManaged: 1, ...(content as Record<string, unknown>) }, null, 2)));
     return uri.toString();
   }
 }

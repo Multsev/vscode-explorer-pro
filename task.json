@@ -50,12 +50,30 @@
   {
     "id": "workspace-cleanup",
     "title": "Безопасно очищать старые служебные workspace",
-    "status": "todo",
+    "status": "done",
     "updatedAt": "2026-10-06"
   },
   {
     "id": "extension-icon",
     "title": "Добавить значок карточки расширения и установить обновление",
+    "status": "done",
+    "updatedAt": "2026-10-06"
+  },
+  {
+    "id": "recovery-exit",
+    "title": "Надёжный выход из фокуса при недоступном проекте",
+    "status": "done",
+    "updatedAt": "2026-10-06"
+  },
+  {
+    "id": "focus-indicator",
+    "title": "Путь фокуса и меню индикатора",
+    "status": "done",
+    "updatedAt": "2026-10-06"
+  },
+  {
+    "id": "terminal-selection",
+    "title": "Терминал в выделенной папке или папке выбранного файла",
     "status": "done",
     "updatedAt": "2026-10-06"
   }

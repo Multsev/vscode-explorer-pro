@@ -14,7 +14,7 @@ class Host implements FocusHost {
     if (this.failure === "prepare") throw Error("Disk full");
     this.written.push(state); return `file:///focus-${this.written.length}.code-workspace`;
   }
-  public async prepareRestore(snapshot: WorkspaceSnapshot) { this.restored = snapshot; return snapshot.workspaceFile ?? "file:///restored"; }
+  public async prepareRestore(snapshot: WorkspaceSnapshot): Promise<string | undefined> { this.restored = snapshot; return snapshot.workspaceFile ?? "file:///restored"; }
   public async open(uri: string | undefined) {
     if (this.failure === "open") throw Error("Opening failed");
     assert.ok(this.written.length || this.restored, "Destination must be persisted before restarting the host");
@@ -90,6 +90,13 @@ describe("Workspace focus", () => {
     await service.focus("file:///a"); const before = service.getState();
     host.open = async () => false;
     await service.focus("file:///b"); assert.strictEqual(service.getState(), before);
+    await service.restore(); assert.strictEqual(service.getState(), before);
+  });
+
+  it("does not clear the return state when recovery selection is cancelled", async () => {
+    const host = new Host(); const service = new WorkspaceFocus(host);
+    await service.focus("file:///a"); const before = service.getState();
+    host.prepareRestore = async () => undefined;
     await service.restore(); assert.strictEqual(service.getState(), before);
   });
 

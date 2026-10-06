@@ -42,6 +42,7 @@ export class WorkspaceFocus {
   private async restoreOriginal(): Promise<void> {
     if (!this.state) return;
     const destination = await this.host.prepareRestore(this.state.original);
+    if (!destination) return; // Recovery picker cancellation keeps the current return state.
     if (await this.host.open(destination)) this.state = undefined;
   }
 

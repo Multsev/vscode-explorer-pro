@@ -27,6 +27,9 @@ export class TerminalService implements vscode.Disposable {
       }
     }
     let terminal = this.terminals.get(key);
+    const actualCwd = terminal?.shellIntegration?.cwd;
+    // If the user changed cwd, preserve that shell and create a fresh one at the requested folder.
+    if (actualCwd && actualCwd.toString() !== key) terminal = undefined;
     if (!terminal) {
       terminal = vscode.window.createTerminal({ name: `Explorer Pro: ${path.basename(dir.fsPath) || dir.fsPath}`, cwd: dir });
       this.terminals.set(key, terminal);

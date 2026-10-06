@@ -2,7 +2,7 @@
   "name": "explorer-pro",
   "displayName": "Explorer Pro — Navigator & Focus",
   "description": "Directory navigation, history and reversible workspace focus in one extension.",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "publisher": "max-local",
   "license": "UNLICENSED",
   "engines": {
@@ -136,6 +136,16 @@
         "command": "extensionExplorer.click",
         "title": "%command.click%",
         "category": "Explorer Pro"
+      },
+      {
+        "command": "extensionExplorer.focusMenu",
+        "title": "%command.focusMenu%",
+        "category": "Explorer Pro"
+      },
+      {
+        "command": "extensionExplorer.cleanupWorkspaces",
+        "title": "%command.cleanupWorkspaces%",
+        "category": "Explorer Pro"
       }
     ],
     "menus": {
@@ -226,6 +236,11 @@
           "command": "extensionExplorer.saveRoot",
           "when": "view == extensionExplorer && viewItem == extensionExplorer.folder",
           "group": "workspace"
+        },
+        {
+          "command": "extensionExplorer.openTerminal",
+          "when": "view == extensionExplorer && viewItem == extensionExplorer.file",
+          "group": "workspace"
         }
       ],
       "explorer/context": [
@@ -238,6 +253,11 @@
           "command": "extensionExplorer.restoreWorkspace",
           "when": "extensionExplorer.focusActive",
           "group": "navigation@10"
+        },
+        {
+          "command": "extensionExplorer.openTerminal",
+          "when": "resourceScheme == file",
+          "group": "navigation@11"
         }
       ],
       "commandPalette": [
@@ -361,7 +381,7 @@
     "lint": "eslint .",
     "test": "npm run compile && mocha \"out/test/**/*.test.js\"",
     "vscode:prepublish": "npm run compile",
-    "package": "vsce package --no-dependencies --allow-missing-repository -o out/explorer-pro-0.2.1.vsix",
+    "package": "vsce package --no-dependencies --allow-missing-repository -o out/explorer-pro-0.3.0.vsix",
     "test:host": "npm run compile && node scripts/run-host-tests.cjs",
     "icon": "node scripts/generate-extension-icon.cjs"
   },

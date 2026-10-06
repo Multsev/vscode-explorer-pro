@@ -1,3 +1,5 @@
+import * as path from "path";
+import { parentDirectory, isSamePath } from "../utils/paths";
 import * as vscode from "vscode";
 import { getConfig, SortMode } from "../config";
 import { statWithSymlinkResolution } from "../utils/fs";
@@ -35,6 +37,13 @@ export class DirectoryTreeDataProvider
 
   public getTreeItem(element: ExplorerItem): vscode.TreeItem {
     return element;
+  }
+
+  public getParent(element: ExplorerItem): ExplorerItem | undefined {
+    const parent = parentDirectory(element.uri);
+    const relative = path.relative(this._root.fsPath, parent.fsPath);
+    if (isSamePath(parent, this._root) || relative === ".." || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative)) return;
+    return new ExplorerItem({ uri: parent, label: path.basename(parent.fsPath), isDirectory: true });
   }
 
   public async getChildren(element?: ExplorerItem): Promise<ExplorerItem[]> {

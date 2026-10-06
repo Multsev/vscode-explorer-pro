@@ -82,6 +82,12 @@ export class DirectoryExplorerController implements vscode.Disposable {
     }
   }
 
+  public async select(uri: vscode.Uri): Promise<void> {
+    const items = await this.provider.getChildren();
+    const item = items.find(entry => isSamePath(entry.uri, uri));
+    if (item) await this.treeView.reveal(item, { select: true, focus: true });
+  }
+
   public getCurrentDirectory(): vscode.Uri { return this.currentDirectory(); }
 
   private run(operation: () => Promise<unknown>): Promise<unknown> {
@@ -95,7 +101,7 @@ export class DirectoryExplorerController implements vscode.Disposable {
   }
 
   private targetUri(item?: ExplorerItem | vscode.Uri): vscode.Uri {
-    return item instanceof vscode.Uri ? item : item?.uri ?? this.currentDirectory();
+    return item instanceof vscode.Uri ? item : (item ?? this.selectedItem())?.uri ?? this.currentDirectory();
   }
 
   private registerCommands(): void {
@@ -118,9 +124,26 @@ export class DirectoryExplorerController implements vscode.Disposable {
         const selected = await vscode.window.showOpenDialog({ canSelectFiles: false, canSelectFolders: true, canSelectMany: false, defaultUri: this.currentDirectory() });
         if (selected?.[0]) await this.enterDirectory(selected[0]);
       })),
-      vscode.commands.registerCommand("extensionExplorer.openTerminal", (item?: ExplorerItem | vscode.Uri) => this.run(async () => this.terminals.open(this.targetUri(item)))),
+      vscode.commands.registerCommand("extensionExplorer.openTerminal", (item?: ExplorerItem | vscode.Uri) => this.run(async () => {
+        const uri = this.targetUri(item);
+        const info = await statWithSymlinkResolution(uri);
+        this.terminals.open(info.isDirectory ? uri : parentDirectory(uri));
+      })),
       vscode.commands.registerCommand("extensionExplorer.focusFolder", (item?: ExplorerItem | vscode.Uri) => this.run(() => this.focus.focus(this.targetUri(item)))),
       vscode.commands.registerCommand("extensionExplorer.restoreWorkspace", () => this.run(() => this.focus.restore())),
+      vscode.commands.registerCommand("extensionExplorer.focusMenu", () => this.run(async () => {
+        const action = await vscode.window.showQuickPick([
+          { label: "Назад", description: "Предыдущий фокус; из первого — исходный проект", action: "back" },
+          { label: "Полный проект", action: "restore" },
+          { label: "Выбрать другой фокус…", action: "pick" }
+        ], { title: "Фокус рабочего пространства" });
+        if (action?.action === "back") await this.focus.back();
+        if (action?.action === "restore") await this.focus.restore();
+        if (action?.action === "pick") {
+          const picked = await vscode.window.showOpenDialog({ canSelectFiles: false, canSelectFolders: true, canSelectMany: false, defaultUri: this.currentDirectory() });
+          if (picked?.[0]) await this.focus.focus(picked[0]);
+        }
+      })),
       vscode.commands.registerCommand("extensionExplorer.focusBack", () => this.run(() => this.focus.back())),
       vscode.commands.registerCommand("extensionExplorer.saveRoot", (item?: ExplorerItem | vscode.Uri) => this.run(async () => {
         const uri = this.targetUri(item);

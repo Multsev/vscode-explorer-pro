@@ -2,11 +2,13 @@ import * as vscode from "vscode";
 import * as assert from "assert";
 import * as fs from "fs/promises";
 import * as path from "path";
+import { randomUUID } from "crypto";
 import { VscodeFocusHost } from "../focus/vscodeFocusHost";
 import { FocusState } from "../focus/focusState";
 import { ExplorerItem } from "../tree/explorerItem";
 
 type ExtensionApi = {
+  select(uri: vscode.Uri): Promise<void>;
   currentDirectory(): vscode.Uri;
   children(): Promise<ExplorerItem[]>;
   focusState(): FocusState | undefined;
@@ -57,6 +59,15 @@ export async function run(): Promise<void> {
       await vscode.commands.executeCommand("extensionExplorer.openTerminal", root);
       await vscode.commands.executeCommand("extensionExplorer.openTerminal", root);
       assert.equal(vscode.window.terminals.filter(t => t.name.startsWith("Explorer Pro:")).length, 1);
+      await api.select(child);
+      await vscode.commands.executeCommand("extensionExplorer.openTerminal");
+      const folderTerminal = vscode.window.terminals.find(t => t.name === "Explorer Pro: child")!;
+      assert.ok(folderTerminal);
+      const folderOptions = folderTerminal.creationOptions as vscode.TerminalOptions;
+      assert.equal((folderOptions.cwd as vscode.Uri).fsPath, child.fsPath);
+      await api.select(text.uri);
+      await vscode.commands.executeCommand("extensionExplorer.openTerminal");
+      assert.equal(vscode.window.terminals.filter(t => t.name === "Explorer Pro: project").length, 1);
       const manifest = JSON.parse(await fs.readFile(path.join(extension.extensionPath, "package.json"), "utf8"));
       const registered = await vscode.commands.getCommands(true);
       for (const c of manifest.contributes.commands) assert.ok(registered.includes(c.command), `Missing command ${c.command}`);
@@ -65,6 +76,23 @@ export async function run(): Promise<void> {
     } else if (phase === "nested") {
       assert.equal(vscode.workspace.workspaceFolders?.[0]?.uri.toString(), child.toString());
       assert.equal(api.focusState()?.original.workspaceFile, vscode.Uri.file(originalFile).toString());
+      const directory = path.dirname(vscode.workspace.workspaceFile!.fsPath);
+      const oldNames: string[] = [];
+      for (let i = 0; i < 25; i++) {
+        const file = path.join(directory, `restored-${randomUUID()}.code-workspace`);
+        await fs.writeFile(file, JSON.stringify({ explorerProManaged: 1, folders: [] }));
+        const time = new Date(Date.now() - (60 + i) * 86400000);
+        await fs.utimes(file, time, time); oldNames.push(file);
+      }
+      const protectedFile = oldNames[24]!;
+      await fs.writeFile(path.join(directory, `lease-${process.ppid}.json`), JSON.stringify({ pid: process.ppid, workspace: vscode.Uri.file(protectedFile).toString() }));
+      const unrelated = path.join(directory, "unrelated.code-workspace");
+      await fs.writeFile(unrelated, "{}");
+      await vscode.commands.executeCommand("extensionExplorer.cleanupWorkspaces");
+      await fs.stat(protectedFile); await fs.stat(unrelated); await fs.stat(vscode.workspace.workspaceFile!.fsPath);
+      let retained = 0;
+      for (const file of oldNames) try { await fs.stat(file); retained++; } catch { /* Expected removed candidate. */ }
+      assert.ok(retained < 25 && retained >= 20, "Cleanup must remove old files while retaining recent and active workspaces");
       await vscode.commands.executeCommand("extensionExplorer.focusFolder", deep);
     } else if (phase === "back") {
       assert.equal(vscode.workspace.workspaceFolders?.[0]?.uri.toString(), deep.toString());
