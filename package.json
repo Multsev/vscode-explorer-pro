@@ -1,0 +1,388 @@
+{
+  "name": "explorer-pro",
+  "displayName": "Explorer Pro — Navigator & Focus",
+  "description": "Directory navigation, history and reversible workspace focus in one extension.",
+  "version": "0.2.0",
+  "publisher": "max-local",
+  "license": "UNLICENSED",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "views": {
+      "explorer": [
+        {
+          "id": "extensionExplorer",
+          "name": "%view.name%"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "extensionExplorer.goBack",
+        "title": "%command.goBack%",
+        "category": "Explorer Pro",
+        "icon": {
+          "light": "resources/light/back.svg",
+          "dark": "resources/dark/back.svg"
+        },
+        "enablement": "extensionExplorer.canGoBack"
+      },
+      {
+        "command": "extensionExplorer.goForward",
+        "title": "%command.goForward%",
+        "category": "Explorer Pro",
+        "icon": {
+          "light": "resources/light/forward.svg",
+          "dark": "resources/dark/forward.svg"
+        },
+        "enablement": "extensionExplorer.canGoForward"
+      },
+      {
+        "command": "extensionExplorer.goUp",
+        "title": "%command.goUp%",
+        "category": "Explorer Pro",
+        "icon": {
+          "light": "resources/light/up.svg",
+          "dark": "resources/dark/up.svg"
+        },
+        "enablement": "extensionExplorer.canGoUp"
+      },
+      {
+        "command": "extensionExplorer.goToRoot",
+        "title": "%command.goToRoot%",
+        "category": "Explorer Pro",
+        "icon": {
+          "light": "resources/light/root.svg",
+          "dark": "resources/dark/root.svg"
+        }
+      },
+      {
+        "command": "extensionExplorer.refresh",
+        "title": "%command.refresh%",
+        "category": "Explorer Pro",
+        "icon": {
+          "light": "resources/light/refresh.svg",
+          "dark": "resources/dark/refresh.svg"
+        }
+      },
+      {
+        "command": "extensionExplorer.enter",
+        "title": "%command.enter%",
+        "category": "Explorer Pro"
+      },
+      {
+        "command": "extensionExplorer.copyPath",
+        "title": "%command.copyPath%",
+        "category": "Explorer Pro"
+      },
+      {
+        "command": "extensionExplorer.revealInVscodeExplorer",
+        "title": "%command.revealInVscodeExplorer%",
+        "category": "Explorer Pro"
+      },
+      {
+        "command": "extensionExplorer.pickRoot",
+        "title": "%command.pickRoot%",
+        "category": "Explorer Pro",
+        "icon": "$(folder-opened)"
+      },
+      {
+        "command": "extensionExplorer.openTerminal",
+        "title": "%command.openTerminal%",
+        "category": "Explorer Pro",
+        "icon": "$(terminal)"
+      },
+      {
+        "command": "extensionExplorer.focusFolder",
+        "title": "%command.focusFolder%",
+        "category": "Explorer Pro",
+        "icon": "$(zoom-in)"
+      },
+      {
+        "command": "extensionExplorer.restoreWorkspace",
+        "title": "%command.restoreWorkspace%",
+        "category": "Explorer Pro",
+        "icon": "$(zoom-out)",
+        "enablement": "extensionExplorer.focusActive"
+      },
+      {
+        "command": "extensionExplorer.focusBack",
+        "title": "%command.focusBack%",
+        "category": "Explorer Pro",
+        "icon": "$(arrow-left)",
+        "enablement": "extensionExplorer.focusCanGoBack"
+      },
+      {
+        "command": "extensionExplorer.saveRoot",
+        "title": "%command.saveRoot%",
+        "category": "Explorer Pro",
+        "icon": "$(home)"
+      },
+      {
+        "command": "extensionExplorer.openSavedRoot",
+        "title": "%command.openSavedRoot%",
+        "category": "Explorer Pro",
+        "icon": "$(home)"
+      },
+      {
+        "command": "extensionExplorer.click",
+        "title": "%command.click%",
+        "category": "Explorer Pro"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "extensionExplorer.goBack",
+          "when": "view == extensionExplorer",
+          "group": "navigation"
+        },
+        {
+          "command": "extensionExplorer.goForward",
+          "when": "view == extensionExplorer",
+          "group": "navigation"
+        },
+        {
+          "command": "extensionExplorer.goUp",
+          "when": "view == extensionExplorer",
+          "group": "navigation"
+        },
+        {
+          "command": "extensionExplorer.goToRoot",
+          "when": "view == extensionExplorer",
+          "group": "navigation"
+        },
+        {
+          "command": "extensionExplorer.refresh",
+          "when": "view == extensionExplorer",
+          "group": "navigation"
+        },
+        {
+          "command": "extensionExplorer.pickRoot",
+          "when": "view == extensionExplorer",
+          "group": "navigation"
+        },
+        {
+          "command": "extensionExplorer.openTerminal",
+          "when": "view == extensionExplorer",
+          "group": "workspace"
+        },
+        {
+          "command": "extensionExplorer.focusFolder",
+          "when": "view == extensionExplorer",
+          "group": "workspace"
+        },
+        {
+          "command": "extensionExplorer.restoreWorkspace",
+          "when": "view == extensionExplorer && extensionExplorer.focusActive",
+          "group": "workspace"
+        },
+        {
+          "command": "extensionExplorer.openSavedRoot",
+          "when": "view == extensionExplorer",
+          "group": "workspace"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "extensionExplorer.enter",
+          "when": "view == extensionExplorer && viewItem == extensionExplorer.folder",
+          "group": "navigation@1"
+        },
+        {
+          "command": "extensionExplorer.enter",
+          "when": "view == extensionExplorer && viewItem == extensionExplorer.file",
+          "group": "navigation@1"
+        },
+        {
+          "command": "extensionExplorer.copyPath",
+          "when": "view == extensionExplorer",
+          "group": "navigation@2"
+        },
+        {
+          "command": "extensionExplorer.revealInVscodeExplorer",
+          "when": "view == extensionExplorer",
+          "group": "navigation@3"
+        },
+        {
+          "command": "extensionExplorer.focusFolder",
+          "when": "view == extensionExplorer && viewItem == extensionExplorer.folder",
+          "group": "workspace"
+        },
+        {
+          "command": "extensionExplorer.openTerminal",
+          "when": "view == extensionExplorer && viewItem == extensionExplorer.folder",
+          "group": "workspace"
+        },
+        {
+          "command": "extensionExplorer.saveRoot",
+          "when": "view == extensionExplorer && viewItem == extensionExplorer.folder",
+          "group": "workspace"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "extensionExplorer.focusFolder",
+          "when": "explorerResourceIsFolder",
+          "group": "navigation@9"
+        },
+        {
+          "command": "extensionExplorer.restoreWorkspace",
+          "when": "extensionExplorer.focusActive",
+          "group": "navigation@10"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "extensionExplorer.click",
+          "when": "false"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "extensionExplorer.goBack",
+        "key": "alt+left",
+        "mac": "cmd+[",
+        "when": "focusedView == extensionExplorer && listFocus && !inputFocus"
+      },
+      {
+        "command": "extensionExplorer.goForward",
+        "key": "alt+right",
+        "mac": "cmd+]",
+        "when": "focusedView == extensionExplorer && listFocus && !inputFocus"
+      },
+      {
+        "command": "extensionExplorer.enter",
+        "key": "enter",
+        "when": "focusedView == extensionExplorer && listFocus && !inputFocus"
+      },
+      {
+        "command": "extensionExplorer.goUp",
+        "key": "backspace",
+        "when": "focusedView == extensionExplorer && listFocus && !inputFocus"
+      },
+      {
+        "command": "extensionExplorer.restoreWorkspace",
+        "key": "ctrl+alt+f",
+        "mac": "cmd+alt+f",
+        "when": "extensionExplorer.focusActive"
+      }
+    ],
+    "configuration": {
+      "title": "Explorer Pro",
+      "properties": {
+        "extensionExplorer.startPath": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null,
+          "description": "%config.startPath%"
+        },
+        "extensionExplorer.showHidden": {
+          "type": "boolean",
+          "default": false,
+          "description": "%config.showHidden%"
+        },
+        "extensionExplorer.sortMode": {
+          "type": "string",
+          "enum": [
+            "name",
+            "typeThenName",
+            "mtime"
+          ],
+          "default": "typeThenName",
+          "description": "%config.sortMode%"
+        },
+        "extensionExplorer.doubleClickTimeoutMs": {
+          "type": "number",
+          "default": 400,
+          "minimum": 100,
+          "description": "%config.doubleClickTimeoutMs%",
+          "maximum": 1000
+        },
+        "extensionExplorer.historyMaxLength": {
+          "type": "number",
+          "default": 100,
+          "minimum": 1,
+          "description": "%config.historyMaxLength%",
+          "maximum": 500
+        },
+        "extensionExplorer.openFilesOnSingleClick": {
+          "type": "boolean",
+          "default": true,
+          "description": "%config.openFilesOnSingleClick%"
+        },
+        "extensionExplorer.openFilesInPreview": {
+          "type": "boolean",
+          "default": true,
+          "description": "%config.openFilesInPreview%"
+        },
+        "extensionExplorer.enterFolderOnDoubleClick": {
+          "type": "boolean",
+          "default": true,
+          "description": "%config.enterFolderOnDoubleClick%"
+        },
+        "extensionExplorer.persistState": {
+          "type": "boolean",
+          "default": true,
+          "description": "%config.persistState%"
+        },
+        "extensionExplorer.openTerminalOnEnter": {
+          "type": "boolean",
+          "default": false,
+          "description": "%config.openTerminalOnEnter%"
+        },
+        "extensionExplorer.openTerminalOnFocus": {
+          "type": "boolean",
+          "default": false,
+          "description": "%config.openTerminalOnFocus%"
+        },
+        "extensionExplorer.closePreviousTerminals": {
+          "type": "boolean",
+          "default": false,
+          "description": "%config.closePreviousTerminals%"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint .",
+    "test": "npm run compile && mocha \"out/test/**/*.test.js\"",
+    "vscode:prepublish": "npm run compile",
+    "package": "vsce package --no-dependencies --allow-missing-repository -o out/explorer-pro-0.2.0.vsix",
+    "test:host": "npm run compile && node scripts/run-host-tests.cjs"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^20.11.30",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^8.18.0",
+    "@typescript-eslint/parser": "^8.18.0",
+    "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^4.0.0",
+    "eslint": "^9.17.0",
+    "mocha": "^12.0.3",
+    "typescript": "^5.7.2"
+  },
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true
+    },
+    "virtualWorkspaces": {
+      "supported": false,
+      "description": "Local filesystem navigation is required."
+    }
+  }
+}

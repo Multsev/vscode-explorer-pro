@@ -1,0 +1,56 @@
+[
+  {
+    "id": "unify",
+    "title": "Объединить прототипы без изменения исходных проектов",
+    "status": "done",
+    "updatedAt": "2026-10-06"
+  },
+  {
+    "id": "navigation",
+    "title": "Исправить клики, контекстные команды и историю",
+    "status": "done",
+    "updatedAt": "2026-10-06"
+  },
+  {
+    "id": "focus",
+    "title": "Реализовать обратимый фокус с изолированным сохранением",
+    "status": "done",
+    "updatedAt": "2026-10-06"
+  },
+  {
+    "id": "terminals",
+    "title": "Повторно использовать терминалы по каталогам",
+    "status": "done",
+    "updatedAt": "2026-10-06"
+  },
+  {
+    "id": "unit-tests",
+    "title": "Проверить историю, клики и ошибки переключения",
+    "status": "done",
+    "updatedAt": "2026-10-06"
+  },
+  {
+    "id": "host-tests",
+    "title": "Проверить команды и восстановление внутри VS Code",
+    "status": "done",
+    "updatedAt": "2026-10-06"
+  },
+  {
+    "id": "package-install",
+    "title": "Собрать и установить единый VSIX",
+    "status": "done",
+    "updatedAt": "2026-10-06"
+  },
+  {
+    "id": "nested-watchers",
+    "title": "Обновлять раскрытые вложенные папки автоматически",
+    "status": "todo",
+    "updatedAt": "2026-10-06"
+  },
+  {
+    "id": "workspace-cleanup",
+    "title": "Безопасно очищать старые служебные workspace",
+    "status": "todo",
+    "updatedAt": "2026-10-06"
+  }
+]
