@@ -423,5 +423,13 @@
       "description": "Local filesystem navigation is required."
     }
   },
-  "icon": "resources/extension-icon.png"
+  "icon": "resources/extension-icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Multsev/vscode-explorer-pro.git"
+  },
+  "homepage": "https://github.com/Multsev/vscode-explorer-pro#readme",
+  "bugs": {
+    "url": "https://github.com/Multsev/vscode-explorer-pro/issues"
+  }
 }

@@ -18,7 +18,7 @@
 
 ## Установка
 
-Требуется VS Code 1.85 или новее; локально проверяется установленный VS Code на macOS. В Extensions → «…» → Install from VSIX выберите `out/explorer-pro-0.4.1.vsix`.
+Требуется VS Code 1.85 или новее; локально проверяется установленный VS Code на macOS. Скачайте `explorer-pro-0.4.1.vsix` из релиза: https://github.com/Multsev/vscode-explorer-pro/releases/tag/v0.4.1. В Extensions → «…» → Install from VSIX выберите скачанный файл. При локальной сборке пакет находится в `out/`.
 
 ```sh
 code --install-extension out/explorer-pro-0.4.1.vsix --force
