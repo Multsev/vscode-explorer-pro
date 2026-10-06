@@ -94,5 +94,11 @@
     "title": "Переключать видимость скрытых файлов и папок кнопкой панели",
     "status": "done",
     "updatedAt": "2026-10-06"
+  },
+  {
+    "id": "compact-toolbar",
+    "title": "Перенести Root, Hidden и Collapse в меню панели",
+    "status": "done",
+    "updatedAt": "2026-10-06"
   }
 ]
