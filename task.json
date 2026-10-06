@@ -82,5 +82,11 @@
     "title": "Корзина, удаление папок и файлов, Shift/Cmd/Ctrl выделение",
     "status": "done",
     "updatedAt": "2026-10-06"
+  },
+  {
+    "id": "modern-icon",
+    "title": "Заменить Win95-значок современным в стиле VS Code",
+    "status": "done",
+    "updatedAt": "2026-10-06"
   }
 ]
