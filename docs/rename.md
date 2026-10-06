@@ -1,0 +1,1 @@
+RenameService validates a single path component and applies a native WorkspaceEdit with overwrite disabled. The controller requires one selected item for keyboard invocation and refreshes/reselects after success. Native host tests use a stub only for the input dialog; filesystem edits are real. Tests cover files, nested folder contents, cancellation and collisions.

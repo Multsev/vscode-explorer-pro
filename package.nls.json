@@ -34,5 +34,6 @@
   "command.toggleHidden": "Toggle Hidden Files and Folders",
   "command.showHidden": "Show Hidden Files and Folders",
   "command.hideHidden": "Hide Hidden Files and Folders",
-  "command.collapseAll": "Collapse All"
+  "command.collapseAll": "Collapse All",
+  "command.rename": "Rename"
 }

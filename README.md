@@ -18,10 +18,10 @@
 
 ## Установка
 
-Требуется VS Code 1.85 или новее; локально проверяется установленный VS Code на macOS. Скачайте `explorer-pro-0.5.1.vsix` из релиза: https://github.com/Multsev/vscode-explorer-pro/releases/tag/v0.5.1. В Extensions → «…» → Install from VSIX выберите скачанный файл. При локальной сборке пакет находится в `out/`.
+Требуется VS Code 1.85 или новее; локально проверяется установленный VS Code на macOS. Скачайте `explorer-pro-0.6.0.vsix` из релиза: https://github.com/Multsev/vscode-explorer-pro/releases/tag/v0.6.0. В Extensions → «…» → Install from VSIX выберите скачанный файл. При локальной сборке пакет находится в `out/`.
 
 ```sh
-code --install-extension out/explorer-pro-0.5.1.vsix --force
+code --install-extension out/explorer-pro-0.6.0.vsix --force
 ```
 
 После установки, если панель ещё не появилась: **Developer: Reload Window**. Идентификатор расширения — `max-local.explorer-pro`. Если ранее установлены отдельные прототипы Explorer Pro или FocusedRoot, отключите их, чтобы не видеть несколько навигаторов. Их сохранённое состояние автоматически не переносится.
@@ -104,3 +104,7 @@ npm run package
 В исходниках: `docs/adr/0001-unified-navigation-and-focus.md` — история объединения, `docs/verification.md` — результаты проверки, `ROADMAP.md` — план, `task.json` — задачи, `CHANGELOG.md` — изменения.
 
 Go to Root, Show/Hide Hidden Files и Collapse All находятся в меню «…» панели, освобождая место для основных кнопок навигации.
+
+### Rename
+
+Select one file or folder and press F2, or choose Rename in its context menu. Escape cancels. Existing files are never overwritten. Renames use VS Code WorkspaceEdit so open editors and file-operation participants can follow the change. Folder contents are preserved.

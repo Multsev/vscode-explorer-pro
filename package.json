@@ -2,7 +2,7 @@
   "name": "explorer-pro",
   "displayName": "Explorer Pro",
   "description": "Directory navigation, history and reversible workspace focus in one extension.",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "publisher": "max-local",
   "license": "UNLICENSED",
   "engines": {
@@ -176,6 +176,11 @@
         "title": "%command.collapseAll%",
         "category": "Explorer Pro",
         "icon": "$(collapse-all)"
+      },
+      {
+        "command": "extensionExplorer.rename",
+        "title": "%command.rename%",
+        "category": "Explorer Pro"
       }
     ],
     "menus": {
@@ -291,6 +296,11 @@
           "command": "extensionExplorer.delete",
           "when": "view == extensionExplorer",
           "group": "modification@9"
+        },
+        {
+          "command": "extensionExplorer.rename",
+          "when": "view == extensionExplorer",
+          "group": "modification@1"
         }
       ],
       "explorer/context": [
@@ -358,6 +368,11 @@
         "command": "extensionExplorer.delete",
         "key": "delete",
         "mac": "cmd+backspace",
+        "when": "focusedView == extensionExplorer && listFocus && !inputFocus"
+      },
+      {
+        "command": "extensionExplorer.rename",
+        "key": "f2",
         "when": "focusedView == extensionExplorer && listFocus && !inputFocus"
       }
     ],
@@ -445,7 +460,7 @@
     "lint": "eslint .",
     "test": "npm run compile && mocha \"out/test/**/*.test.js\"",
     "vscode:prepublish": "npm run compile",
-    "package": "vsce package --no-dependencies --allow-missing-repository -o out/explorer-pro-0.5.1.vsix",
+    "package": "vsce package --no-dependencies --allow-missing-repository -o out/explorer-pro-0.6.0.vsix",
     "test:host": "npm run compile && node scripts/run-host-tests.cjs",
     "icon": "node scripts/generate-extension-icon.cjs"
   },

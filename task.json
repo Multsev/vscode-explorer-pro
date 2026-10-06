@@ -100,5 +100,10 @@
     "title": "Перенести Root, Hidden и Collapse в меню панели",
     "status": "done",
     "updatedAt": "2026-10-06"
+  },
+  {
+    "id": "rename-items",
+    "title": "Rename files and folders with F2 and context menu",
+    "status": "done"
   }
 ]

@@ -9,6 +9,7 @@ import { ExplorerItem } from "../tree/explorerItem";
 import { getStateMemento } from "../state/mementoState";
 import { DoubleClickTracker } from "./doubleClickTracker";
 import { deleteToTrash, selectedTargets, DeleteTarget } from "../services/deletion";
+import { RenameService } from "../services/renameService";
 import { VscodeDeleteHost } from "../services/vscodeDeleteHost";
 import { TerminalService } from "../services/terminalService";
 import { FocusController } from "../focus/focusController";
@@ -135,6 +136,20 @@ export class DirectoryExplorerController implements vscode.Disposable {
       vscode.commands.registerCommand("extensionExplorer.toggleHidden", () => this.run(() => this.setHidden(!getConfig().showHidden))),
       vscode.commands.registerCommand("extensionExplorer.showHidden", () => this.run(() => this.setHidden(true))),
       vscode.commands.registerCommand("extensionExplorer.hideHidden", () => this.run(() => this.setHidden(false))),
+      vscode.commands.registerCommand("extensionExplorer.rename", (item?: ExplorerItem | vscode.Uri) => this.run(async () => {
+        if (!item && this.treeView.selection.length !== 1) {
+          void vscode.window.showInformationMessage("Выберите один файл или папку для переименования.");
+          return;
+        }
+        const uri = this.targetUri(item);
+        if (isSamePath(uri, this.currentDirectory())) throw new Error("Переименуйте папку из её родительского каталога.");
+        const renamed = await new RenameService().rename(uri);
+        if (renamed) {
+          this.doubleClick.reset();
+          this.provider.refresh();
+          await this.select(renamed);
+        }
+      })),
       vscode.commands.registerCommand("extensionExplorer.delete", (item?: ExplorerItem | vscode.Uri, selected?: ExplorerItem[]) => this.run(() => this.deleteItems(item, selected))),
       vscode.commands.registerCommand("extensionExplorer.click", (item: ExplorerItem) => this.run(() => this.onItemClicked(item))),
       vscode.commands.registerCommand("extensionExplorer.pickRoot", () => this.run(async () => {

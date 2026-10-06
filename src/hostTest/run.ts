@@ -6,6 +6,7 @@ import { randomUUID } from "crypto";
 import { VscodeFocusHost } from "../focus/vscodeFocusHost";
 import { FocusState } from "../focus/focusState";
 import { VscodeDeleteHost } from "../services/vscodeDeleteHost";
+import { RenameService } from "../services/renameService";
 import { contains } from "../services/deletion";
 import { ExplorerItem } from "../tree/explorerItem";
 
@@ -99,6 +100,30 @@ export async function run(): Promise<void> {
         await vscode.commands.executeCommand("extensionExplorer.delete", deleteItems[0], deleteItems);
       } finally { VscodeDeleteHost.prototype.confirm = realConfirm; }
       for (const name of deleteNames) await assert.rejects(fs.stat(path.join(root.fsPath, name)), (error: NodeJS.ErrnoException) => error.code === "ENOENT");
+      const renameFile = vscode.Uri.joinPath(root, "rename-source.txt");
+      const renameFolder = vscode.Uri.joinPath(root, "rename-source-folder");
+      await fs.writeFile(renameFile.fsPath, "rename fixture");
+      await fs.mkdir(renameFolder.fsPath);
+      await fs.writeFile(path.join(renameFolder.fsPath, "nested.txt"), "nested fixture");
+      const realPrompt = RenameService.prototype.prompt;
+      try {
+        RenameService.prototype.prompt = async () => "renamed.txt";
+        await api.select(renameFile);
+        await vscode.commands.executeCommand("extensionExplorer.rename");
+        assert.equal(await fs.readFile(path.join(root.fsPath, "renamed.txt"), "utf8"), "rename fixture");
+        await assert.rejects(fs.stat(renameFile.fsPath));
+        RenameService.prototype.prompt = async () => "renamed-folder";
+        await vscode.commands.executeCommand("extensionExplorer.rename", renameFolder);
+        assert.equal(await fs.readFile(path.join(root.fsPath, "renamed-folder", "nested.txt"), "utf8"), "nested fixture");
+        RenameService.prototype.prompt = async () => undefined;
+        await vscode.commands.executeCommand("extensionExplorer.rename", vscode.Uri.joinPath(root, "renamed.txt"));
+        assert.equal(await fs.readFile(path.join(root.fsPath, "renamed.txt"), "utf8"), "rename fixture");
+        await fs.writeFile(path.join(root.fsPath, "existing.txt"), "preserved");
+        RenameService.prototype.prompt = async () => "existing.txt";
+        try { await vscode.commands.executeCommand("extensionExplorer.rename", vscode.Uri.joinPath(root, "renamed.txt")); } catch { /* Collision may reject. */ }
+        assert.equal(await fs.readFile(path.join(root.fsPath, "existing.txt"), "utf8"), "preserved");
+        assert.equal(await fs.readFile(path.join(root.fsPath, "renamed.txt"), "utf8"), "rename fixture");
+      } finally { RenameService.prototype.prompt = realPrompt; }
       const manifest = JSON.parse(await fs.readFile(path.join(extension.extensionPath, "package.json"), "utf8"));
       const registered = await vscode.commands.getCommands(true);
       for (const c of manifest.contributes.commands) assert.ok(registered.includes(c.command), `Missing command ${c.command}`);

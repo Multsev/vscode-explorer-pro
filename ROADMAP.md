@@ -18,3 +18,5 @@
 - Проверки на Windows/Linux и отдельных сценариев Workspace Trust.
 - Перенос выбранных настроек исходного workspace в фокус с явными правилами наследования.
 - Поддержка remote URI после проверки fs, путей и терминалов.
+
+- 0.6.0: file and folder Rename via F2 and context menu.
