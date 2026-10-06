@@ -47,4 +47,3 @@ export async function resolveRealPath(uri: vscode.Uri): Promise<vscode.Uri> {
     return uri;
   }
 }
-

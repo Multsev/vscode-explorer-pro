@@ -37,4 +37,3 @@ export function isSamePath(a: vscode.Uri, b: vscode.Uri): boolean {
 function normalizeFsPath(fsPath: string): string {
   return process.platform === "win32" ? fsPath.toLowerCase() : fsPath;
 }
-

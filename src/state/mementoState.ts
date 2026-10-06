@@ -7,4 +7,3 @@ export function getStateMemento(
     ? context.workspaceState
     : context.globalState;
 }
-

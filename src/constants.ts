@@ -20,4 +20,3 @@ export const CONTEXT_KEYS = {
 } as const;
 
 export const STATE_KEY = "extensionExplorer.state.v1";
-

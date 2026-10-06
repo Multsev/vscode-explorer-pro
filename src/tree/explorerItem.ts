@@ -31,4 +31,3 @@ export class ExplorerItem extends vscode.TreeItem {
       : vscode.ThemeIcon.File;
   }
 }
-
