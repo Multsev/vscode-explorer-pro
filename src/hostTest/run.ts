@@ -5,6 +5,8 @@ import * as path from "path";
 import { randomUUID } from "crypto";
 import { VscodeFocusHost } from "../focus/vscodeFocusHost";
 import { FocusState } from "../focus/focusState";
+import { VscodeDeleteHost } from "../services/vscodeDeleteHost";
+import { contains } from "../services/deletion";
 import { ExplorerItem } from "../tree/explorerItem";
 
 type ExtensionApi = {
@@ -68,6 +70,23 @@ export async function run(): Promise<void> {
       await api.select(text.uri);
       await vscode.commands.executeCommand("extensionExplorer.openTerminal");
       assert.equal(vscode.window.terminals.filter(t => t.name === "Explorer Pro: project").length, 1);
+      const suffix = randomUUID();
+      const deleteNames = [`delete-one-${suffix}.txt`, `delete-two-${suffix}.txt`, `delete-folder-${suffix}`];
+      await fs.writeFile(path.join(root.fsPath, deleteNames[0]!), "fixture");
+      await fs.writeFile(path.join(root.fsPath, deleteNames[1]!), "fixture");
+      await fs.mkdir(path.join(root.fsPath, deleteNames[2]!));
+      await fs.writeFile(path.join(root.fsPath, deleteNames[2]!, "nested.txt"), "fixture");
+      const deleteItems = (await api.children()).filter(item => deleteNames.includes(String(item.label)));
+      assert.equal(deleteItems.length, 3);
+      const realConfirm = VscodeDeleteHost.prototype.confirm;
+      VscodeDeleteHost.prototype.confirm = async targets => {
+        assert.ok(targets.every(target => contains(root.fsPath, target.fsPath)), "Delete only isolated test fixtures");
+        return true;
+      };
+      try {
+        await vscode.commands.executeCommand("extensionExplorer.delete", deleteItems[0], deleteItems);
+      } finally { VscodeDeleteHost.prototype.confirm = realConfirm; }
+      for (const name of deleteNames) await assert.rejects(fs.stat(path.join(root.fsPath, name)), (error: NodeJS.ErrnoException) => error.code === "ENOENT");
       const manifest = JSON.parse(await fs.readFile(path.join(extension.extensionPath, "package.json"), "utf8"));
       const registered = await vscode.commands.getCommands(true);
       for (const c of manifest.contributes.commands) assert.ok(registered.includes(c.command), `Missing command ${c.command}`);

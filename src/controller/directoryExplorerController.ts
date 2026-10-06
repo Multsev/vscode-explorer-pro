@@ -8,6 +8,8 @@ import { DirectoryTreeDataProvider } from "../tree/directoryTreeDataProvider";
 import { ExplorerItem } from "../tree/explorerItem";
 import { getStateMemento } from "../state/mementoState";
 import { DoubleClickTracker } from "./doubleClickTracker";
+import { deleteToTrash, selectedTargets, DeleteTarget } from "../services/deletion";
+import { VscodeDeleteHost } from "../services/vscodeDeleteHost";
 import { TerminalService } from "../services/terminalService";
 import { FocusController } from "../focus/focusController";
 
@@ -57,6 +59,7 @@ export class DirectoryExplorerController implements vscode.Disposable {
     );
     this.treeView = vscode.window.createTreeView(VIEW_ID, {
       treeDataProvider: this.provider,
+      canSelectMany: true,
       showCollapseAll: true
     });
 
@@ -119,6 +122,7 @@ export class DirectoryExplorerController implements vscode.Disposable {
         COMMANDS.revealInVscodeExplorer,
         (item?: ExplorerItem) => this.run(() => this.revealInVscodeExplorer(item))
       ),
+      vscode.commands.registerCommand("extensionExplorer.delete", (item?: ExplorerItem | vscode.Uri, selected?: ExplorerItem[]) => this.run(() => this.deleteItems(item, selected))),
       vscode.commands.registerCommand("extensionExplorer.click", (item: ExplorerItem) => this.run(() => this.onItemClicked(item))),
       vscode.commands.registerCommand("extensionExplorer.pickRoot", () => this.run(async () => {
         const selected = await vscode.window.showOpenDialog({ canSelectFiles: false, canSelectFolders: true, canSelectMany: false, defaultUri: this.currentDirectory() });
@@ -167,7 +171,20 @@ export class DirectoryExplorerController implements vscode.Disposable {
     return this.treeView.selection[0];
   }
 
+  private async deleteItems(item?: ExplorerItem | vscode.Uri, selected?: ExplorerItem[]): Promise<void> {
+    const asTarget = (uri: vscode.Uri): DeleteTarget => ({ uri: uri.toString(), fsPath: uri.fsPath });
+    const clicked = item ? asTarget(item instanceof vscode.Uri ? item : item.uri) : undefined;
+    const selection = (selected?.length ? selected : this.treeView.selection).map(entry => asTarget(entry.uri));
+    const targets = selectedTargets(clicked, selection);
+    const result = await deleteToTrash(targets, this.currentDirectory().fsPath, new VscodeDeleteHost());
+    this.provider.refresh();
+    if (result.failed.length) {
+      void vscode.window.showErrorMessage(`Не удалось удалить ${result.failed.length} элемент(ов): ${result.failed.map(f => `${f.target.fsPath}: ${f.error}`).join("; ")}`);
+    }
+  }
+
   private async onItemClicked(selection: ExplorerItem): Promise<void> {
+    if (this.treeView.selection.length > 1) { this.doubleClick.reset(); return; }
     if (!selection) {
       return;
     }

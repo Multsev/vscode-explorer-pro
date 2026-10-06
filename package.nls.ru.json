@@ -29,5 +29,6 @@
   "config.openTerminalOnFocus": "Открывать терминал после изменения фокуса рабочего пространства.",
   "config.closePreviousTerminals": "Закрывать предыдущие терминалы, созданные только Explorer Pro.",
   "command.focusMenu": "Меню фокуса",
-  "command.cleanupWorkspaces": "Очистить старые служебные workspace"
+  "command.cleanupWorkspaces": "Очистить старые служебные workspace",
+  "command.delete": "Удалить выбранные элементы в корзину"
 }
