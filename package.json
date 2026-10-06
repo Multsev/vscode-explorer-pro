@@ -2,7 +2,7 @@
   "name": "explorer-pro",
   "displayName": "Explorer Pro",
   "description": "Directory navigation, history and reversible workspace focus in one extension.",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "publisher": "max-local",
   "license": "UNLICENSED",
   "engines": {
@@ -170,6 +170,12 @@
         "title": "%command.hideHidden%",
         "category": "Explorer Pro",
         "icon": "$(eye-closed)"
+      },
+      {
+        "command": "extensionExplorer.collapseAll",
+        "title": "%command.collapseAll%",
+        "category": "Explorer Pro",
+        "icon": "$(collapse-all)"
       }
     ],
     "menus": {
@@ -192,7 +198,7 @@
         {
           "command": "extensionExplorer.goToRoot",
           "when": "view == extensionExplorer",
-          "group": "navigation"
+          "group": "organize@1"
         },
         {
           "command": "extensionExplorer.refresh",
@@ -227,12 +233,17 @@
         {
           "command": "extensionExplorer.showHidden",
           "when": "view == extensionExplorer && !extensionExplorer.hiddenVisible",
-          "group": "navigation@6"
+          "group": "organize@2"
         },
         {
           "command": "extensionExplorer.hideHidden",
           "when": "view == extensionExplorer && extensionExplorer.hiddenVisible",
-          "group": "navigation@6"
+          "group": "organize@2"
+        },
+        {
+          "command": "extensionExplorer.collapseAll",
+          "when": "view == extensionExplorer",
+          "group": "organize@3"
         }
       ],
       "view/item/context": [
@@ -434,7 +445,7 @@
     "lint": "eslint .",
     "test": "npm run compile && mocha \"out/test/**/*.test.js\"",
     "vscode:prepublish": "npm run compile",
-    "package": "vsce package --no-dependencies --allow-missing-repository -o out/explorer-pro-0.5.0.vsix",
+    "package": "vsce package --no-dependencies --allow-missing-repository -o out/explorer-pro-0.5.1.vsix",
     "test:host": "npm run compile && node scripts/run-host-tests.cjs",
     "icon": "node scripts/generate-extension-icon.cjs"
   },

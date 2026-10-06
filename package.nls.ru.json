@@ -33,5 +33,6 @@
   "command.delete": "Move to Trash",
   "command.toggleHidden": "Переключить видимость скрытых файлов и папок",
   "command.showHidden": "Показать скрытые файлы и папки",
-  "command.hideHidden": "Скрыть скрытые файлы и папки"
+  "command.hideHidden": "Скрыть скрытые файлы и папки",
+  "command.collapseAll": "Свернуть всё"
 }

@@ -72,6 +72,7 @@ export async function run(): Promise<void> {
       await vscode.commands.executeCommand("extensionExplorer.openTerminal", root);
       assert.equal(vscode.window.terminals.filter(t => t.name.startsWith("Explorer Pro:")).length, 1);
       await api.select(child);
+      await vscode.commands.executeCommand("extensionExplorer.collapseAll");
       await vscode.commands.executeCommand("extensionExplorer.openTerminal");
       const folderTerminal = vscode.window.terminals.find(t => t.name === "Explorer Pro: child")!;
       assert.ok(folderTerminal);

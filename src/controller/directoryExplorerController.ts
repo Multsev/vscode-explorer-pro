@@ -60,7 +60,7 @@ export class DirectoryExplorerController implements vscode.Disposable {
     this.treeView = vscode.window.createTreeView(VIEW_ID, {
       treeDataProvider: this.provider,
       canSelectMany: true,
-      showCollapseAll: true
+      showCollapseAll: false
     });
 
     this.treeView.description = this.provider.getRoot().fsPath;
@@ -122,6 +122,7 @@ export class DirectoryExplorerController implements vscode.Disposable {
       vscode.commands.registerCommand(COMMANDS.goForward, () => this.run(() => this.goForward())),
       vscode.commands.registerCommand(COMMANDS.goUp, () => this.run(() => this.goUp())),
       vscode.commands.registerCommand(COMMANDS.goToRoot, () => this.run(() => this.goToRoot())),
+      vscode.commands.registerCommand("extensionExplorer.collapseAll", () => vscode.commands.executeCommand("workbench.actions.treeView.extensionExplorer.collapseAll")),
       vscode.commands.registerCommand(COMMANDS.refresh, () => this.provider.refresh()),
       vscode.commands.registerCommand(COMMANDS.enter, (item?: ExplorerItem | vscode.Uri) => this.run(() => this.enter(item))),
       vscode.commands.registerCommand(COMMANDS.copyPath, (item?: ExplorerItem) =>

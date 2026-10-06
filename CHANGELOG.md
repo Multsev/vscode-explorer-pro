@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 0.5.1 — 2026-10-06
+
+### Changed
+- Go to Root, Show/Hide Hidden Files и Collapse All перенесены в меню «…» панели.
+
 ## 0.5.0 — 2026-10-06
 
 ### Added
