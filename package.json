@@ -1,8 +1,8 @@
 {
   "name": "explorer-pro",
-  "displayName": "Explorer Pro — Navigator & Focus",
+  "displayName": "Explorer Pro",
   "description": "Directory navigation, history and reversible workspace focus in one extension.",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "publisher": "max-local",
   "license": "UNLICENSED",
   "engines": {
@@ -398,7 +398,7 @@
     "lint": "eslint .",
     "test": "npm run compile && mocha \"out/test/**/*.test.js\"",
     "vscode:prepublish": "npm run compile",
-    "package": "vsce package --no-dependencies --allow-missing-repository -o out/explorer-pro-0.4.1.vsix",
+    "package": "vsce package --no-dependencies --allow-missing-repository -o out/explorer-pro-0.4.2.vsix",
     "test:host": "npm run compile && node scripts/run-host-tests.cjs",
     "icon": "node scripts/generate-extension-icon.cjs"
   },

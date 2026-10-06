@@ -1,4 +1,4 @@
-# Explorer Pro — Navigator & Focus
+# Explorer Pro
 
 Единое расширение VS Code вместо прототипов Explorer Pro и FocusedRoot. Навигатор каталогов и переключение корня рабочего пространства находятся в одном расширении и используют разные, явно названные действия.
 
@@ -18,10 +18,10 @@
 
 ## Установка
 
-Требуется VS Code 1.85 или новее; локально проверяется установленный VS Code на macOS. Скачайте `explorer-pro-0.4.1.vsix` из релиза: https://github.com/Multsev/vscode-explorer-pro/releases/tag/v0.4.1. В Extensions → «…» → Install from VSIX выберите скачанный файл. При локальной сборке пакет находится в `out/`.
+Требуется VS Code 1.85 или новее; локально проверяется установленный VS Code на macOS. Скачайте `explorer-pro-0.4.2.vsix` из релиза: https://github.com/Multsev/vscode-explorer-pro/releases/tag/v0.4.2. В Extensions → «…» → Install from VSIX выберите скачанный файл. При локальной сборке пакет находится в `out/`.
 
 ```sh
-code --install-extension out/explorer-pro-0.4.1.vsix --force
+code --install-extension out/explorer-pro-0.4.2.vsix --force
 ```
 
 После установки, если панель ещё не появилась: **Developer: Reload Window**. Идентификатор расширения — `max-local.explorer-pro`. Если ранее установлены отдельные прототипы Explorer Pro или FocusedRoot, отключите их, чтобы не видеть несколько навигаторов. Их сохранённое состояние автоматически не переносится.
