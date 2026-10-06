@@ -30,5 +30,8 @@
   "config.closePreviousTerminals": "Close previous terminals created only by Explorer Pro.",
   "command.focusMenu": "Focus Menu",
   "command.cleanupWorkspaces": "Clean Old Managed Workspaces",
-  "command.delete": "Move to Trash"
+  "command.delete": "Move to Trash",
+  "command.toggleHidden": "Toggle Hidden Files and Folders",
+  "command.showHidden": "Show Hidden Files and Folders",
+  "command.hideHidden": "Hide Hidden Files and Folders"
 }

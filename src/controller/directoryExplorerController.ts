@@ -107,6 +107,15 @@ export class DirectoryExplorerController implements vscode.Disposable {
     return item instanceof vscode.Uri ? item : (item ?? this.selectedItem())?.uri ?? this.currentDirectory();
   }
 
+  private async setHidden(visible: boolean): Promise<void> {
+    const config = vscode.workspace.getConfiguration("extensionExplorer");
+    const target = config.inspect<boolean>("showHidden")?.workspaceValue !== undefined
+      ? vscode.ConfigurationTarget.Workspace : vscode.ConfigurationTarget.Global;
+    await config.update("showHidden", visible, target);
+    this.updateContexts();
+    this.provider.refresh();
+  }
+
   private registerCommands(): void {
     this.context.subscriptions.push(
       vscode.commands.registerCommand(COMMANDS.goBack, () => this.run(() => this.goBack())),
@@ -122,6 +131,9 @@ export class DirectoryExplorerController implements vscode.Disposable {
         COMMANDS.revealInVscodeExplorer,
         (item?: ExplorerItem) => this.run(() => this.revealInVscodeExplorer(item))
       ),
+      vscode.commands.registerCommand("extensionExplorer.toggleHidden", () => this.run(() => this.setHidden(!getConfig().showHidden))),
+      vscode.commands.registerCommand("extensionExplorer.showHidden", () => this.run(() => this.setHidden(true))),
+      vscode.commands.registerCommand("extensionExplorer.hideHidden", () => this.run(() => this.setHidden(false))),
       vscode.commands.registerCommand("extensionExplorer.delete", (item?: ExplorerItem | vscode.Uri, selected?: ExplorerItem[]) => this.run(() => this.deleteItems(item, selected))),
       vscode.commands.registerCommand("extensionExplorer.click", (item: ExplorerItem) => this.run(() => this.onItemClicked(item))),
       vscode.commands.registerCommand("extensionExplorer.pickRoot", () => this.run(async () => {
@@ -379,6 +391,7 @@ export class DirectoryExplorerController implements vscode.Disposable {
   }
 
   private updateContexts(): void {
+    void vscode.commands.executeCommand("setContext", "extensionExplorer.hiddenVisible", getConfig().showHidden);
     const root = this.currentDirectory();
     const canGoUp = !isSamePath(parentDirectory(root), root);
     void vscode.commands.executeCommand(

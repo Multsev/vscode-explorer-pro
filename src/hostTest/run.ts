@@ -40,6 +40,16 @@ export async function run(): Promise<void> {
       const items = await api.children();
       assert.ok(items.some(i => i.label === "child" && i.isDirectory));
       assert.ok(!items.some(i => i.label === ".hidden"));
+      await fs.mkdir(path.join(root.fsPath, ".hidden-folder"));
+      await vscode.commands.executeCommand("extensionExplorer.showHidden");
+      await vscode.commands.executeCommand("extensionExplorer.showHidden");
+      const visible = await api.children();
+      assert.ok(visible.some(i => i.label === ".hidden"));
+      assert.ok(visible.some(i => i.label === ".hidden-folder" && i.isDirectory));
+      await vscode.commands.executeCommand("extensionExplorer.hideHidden");
+      await vscode.commands.executeCommand("extensionExplorer.hideHidden");
+      const hidden = await api.children();
+      assert.ok(!hidden.some(i => i.label === ".hidden" || i.label === ".hidden-folder"));
       assert.equal(items.find(i => i.label === "linked-file")?.isDirectory, false);
       await vscode.commands.executeCommand("extensionExplorer.enter", child);
       await vscode.commands.executeCommand("extensionExplorer.goBack");
